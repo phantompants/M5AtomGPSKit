@@ -9,9 +9,7 @@
 #define GPS_RX_PIN 16
 #define GPS_TX_PIN 17
 #define SD_CS_PIN 4
-#define LED_PIN_RED 25
-#define LED_PIN_GREEN 26
-#define LED_PIN_BLUE 27
+#define LED_PIN 22
 #define BUTTON_PIN 14
 
 TinyGPSPlus gps;
@@ -25,9 +23,9 @@ String fileName;
 // Function to get the current date in Sydney timezone
 String getSydneyDate() {
   DateTime now = rtc.now();
-  now = now.unixtime() + 10 * 3600; // Adjust for Sydney timezone (AEST, UTC +10)
+  now = now + TimeSpan(36000); // Adjust for Sydney timezone (AEST, UTC +10)
   char buffer[30];
-  sprintf(buffer, "%04d%02d%02d GPX Data.txt", now.year(), now.month(), now.day());
+  sprintf(buffer, "%04d%02d%02d GPX Data.gpx", now.year(), now.month(), now.day());
   return String(buffer);
 }
 
@@ -56,6 +54,10 @@ void startLogging() {
     return;
   }
 
+  logFile.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+  logFile.println("<gpx version=\"1.1\" creator=\"ATOM GPS Logger\">");
+  logFile.println("<trk><name>ATOM GPS Track</name><trkseg>");
+
   isLogging = true;
   flashLED(0, 128, 0, 500); // Green
 }
@@ -63,6 +65,7 @@ void startLogging() {
 // Function to stop logging
 void stopLogging() {
   if (logFile) {
+    logFile.println("</trkseg></trk></gpx>");
     logFile.close();
   }
   isLogging = false;
@@ -76,7 +79,7 @@ void logGPSData() {
   String gpxData = "<trkpt lat=\"" + String(gps.location.lat(), 6) + "\" lon=\"" + String(gps.location.lng(), 6) + "\">";
   gpxData += "<ele>" + String(gps.altitude.meters()) + "</ele>";
   gpxData += "<speed>" + String(gps.speed.kmph()) + "</speed>";
-  gpxData += "</trkpt>\n";
+  gpxData += "</trkpt>";
 
   if (logFile) {
     logFile.println(gpxData);
@@ -108,7 +111,14 @@ void setup() {
   button.setTapHandler([](Button2 &b) {
     if (isLogging) {
       stopLogging();
+    } else {
+      startLogging();
     }
+  });
+
+  button.setDoubleClickHandler([](Button2 &b) {
+    stopLogging();
+    // Code to shut down the device if applicable
   });
 
   setupGPS();
