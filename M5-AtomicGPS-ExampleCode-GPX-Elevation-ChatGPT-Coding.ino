@@ -92,20 +92,19 @@ void logGPSData() {
 
 // LED flashing function
 void flashLED(int red, int green, int blue, int duration) {
-  analogWrite(LED_PIN_RED, red);
-  analogWrite(LED_PIN_GREEN, green);
-  analogWrite(LED_PIN_BLUE, blue);
+  // Adjust the LED brightness here if needed
+  analogWrite(LED_PIN, red);
   delay(duration);
-  analogWrite(LED_PIN_RED, 0);
-  analogWrite(LED_PIN_GREEN, 0);
-  analogWrite(LED_PIN_BLUE, 0);
+  analogWrite(LED_PIN, green);
+  delay(duration);
+  analogWrite(LED_PIN, blue);
+  delay(duration);
+  analogWrite(LED_PIN, 0);
 }
 
 // Setup function
 void setup() {
-  pinMode(LED_PIN_RED, OUTPUT);
-  pinMode(LED_PIN_GREEN, OUTPUT);
-  pinMode(LED_PIN_BLUE, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   button.begin(BUTTON_PIN);
   button.setTapHandler([](Button2 &b) {
