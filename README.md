@@ -23,3 +23,7 @@ Enable Atom Lite LED
 - For shutdown and power-off - show a green LED on the Atom Lite
 - When receiving GPS data and writing to the SD Card Flash the Atom Lite LED blue
 - When writing to the SD Card is failed or full Flash the Atom Lite LED purple. 
+
+Gave up with that, found some new code including using a DS18B20 sensor temperature sensor, now can't find that source, sorry.
+
+Compiled and working, not tested temperature sensor still waiting on delivery, but it logs GPS data, but GPX format not recognised by my photo Exif tools and I have to convert using ChatGPT, so more testing required.
